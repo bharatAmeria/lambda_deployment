@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/bharatAmeria/House_prediction_v2.git'
+                git branch: 'main', url: 'https://github.com/bharatAmeria/lambda_deployment.git'
             }
         }
 
