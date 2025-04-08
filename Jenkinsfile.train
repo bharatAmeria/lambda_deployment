@@ -47,32 +47,13 @@ pipeline {
                 sh './$VENV_DIR/bin/python src/pipeline/stage03_model_training.py'
             }
         }
-
-        // stage('Docker Build') {
-        //     steps {
-        //         sh 'docker build -t lambda-app:latest .'
-        //     }
-        // }
-
-        // stage('Push Image DockerHub') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId:'Dockerhub', passwordVariable:'', usernamevariable:'')]){
-        //         sh 'docker login -u ${env.docekrHubUser} -p ${env.dockerhubPass} ' 
-        //         sh 'docker image tag lambda-app:latest  bharat/lambda-app:latest'
-        //         sh 'docker push ${env.docekrHubUser}/lambda-app:latest' }
-        //     }
-        // }
-
-        // stage('Deploy Image') {
-        //     steps {
-        //         sh 'docker run -d -p 5000:5000 lambda-app:latest'
-        //     }
-        // }
     }
 
     post {
         success {
             echo '✅  Training Pipeline completed successfully!'
+            echo "🚀 Triggering deployment job..."
+            // build job: 'deployment-job'
         }
         failure {
             echo '❌ Pipeline failed. Check logs.'
