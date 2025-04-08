@@ -56,11 +56,17 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
+        stage('Model Prediction') {
             steps {
-                sh 'docker build -t lambda-app:latest .'
+                sh './tracker/bin/python app/app.py'
             }
         }
+
+        // stage('Docker Build') {
+        //     steps {
+        //         sh 'docker build -t lambda-app:latest .'
+        //     }
+        // }
 
         // stage('Push Image DockerHub') {
         //     steps {
@@ -71,11 +77,11 @@ pipeline {
         //     }
         // }
 
-        stage('Deploy Image') {
-            steps {
-                sh 'docker run -d -p 5000:5000 lambda-app:latest'
-            }
-        }
+        // stage('Deploy Image') {
+        //     steps {
+        //         sh 'docker run -d -p 5000:5000 lambda-app:latest'
+        //     }
+        // }
     }
 
     post {
