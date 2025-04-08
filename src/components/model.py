@@ -1,6 +1,6 @@
 import os
 import sys
-import pickle
+import joblib
 import numpy as np
 import pandas as pd
 from xgboost import XGBRegressor
@@ -43,7 +43,7 @@ class ModelTrainingConfig(ModelTrainingStrategy):
 
             model_path = CONFIG["model"]
             os.makedirs(os.path.dirname(model_path), exist_ok=True)
-            pickle.dump(regressor,open(model_path,'wb'))
+            joblib.dump(regressor,open(model_path,'wb'))
 
         except Exception as e:
             logging.error("Error occurred while extracting zip file", exc_info=True)

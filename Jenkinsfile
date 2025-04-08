@@ -1,8 +1,9 @@
+// @Library("shared") _
 pipeline {
     agent any  // Run on any available agent
 
     environment {
-        VENV_DIR = "tracker"  // Define virtual environment path
+        VENV_DIR = "pred"  // Define virtual environment path
     }
 
     triggers {
@@ -15,6 +16,14 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/bharatAmeria/lambda_deployment.git'
             }
         }
+
+        // stage('hello') {
+        //     steps{
+        //         scripts {
+        //             hello()
+        //         }
+        //     }
+        // }
 
         stage('Setup Environment') {
             steps {
@@ -44,6 +53,27 @@ pipeline {
         stage('Model Training') {
             steps {
                 sh './tracker/bin/python src/pipeline/stage03_model_training.py'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t lambda-app:latest .'
+            }
+        }
+
+        // stage('Push Image DockerHub') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId:'Dockerhub', passwordVariable:'', usernamevariable:'')]){
+        //         sh 'docker login -u ${env.docekrHubUser} -p ${env.dockerhubPass} ' 
+        //         sh 'docker image tag lambda-app:latest  bharat/lambda-app:latest'
+        //         sh 'docker push ${env.docekrHubUser}/lambda-app:latest' }
+        //     }
+        // }
+
+        stage('Deploy Image') {
+            steps {
+                sh 'docker run -d -p 5000:5000 lambda-app:latest'
             }
         }
     }

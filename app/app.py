@@ -16,7 +16,7 @@ def preprocess_input(input_str):
 
 @app.route('/')
 def home():
-    return render_template('app/templates/index.html')
+    return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -28,3 +28,4 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
