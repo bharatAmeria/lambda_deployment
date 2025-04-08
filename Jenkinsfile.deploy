@@ -1,0 +1,57 @@
+pipeline {
+    agent {
+        label 'docker-agent' // Use your Jenkins agent that has Docker and AWS CLI installed
+    }
+
+    environment {
+        AWS_REGION = 'us-east-1'                  // Set your AWS region
+        AWS_ACCOUNT_ID = '123456789012'           // Replace with your AWS account ID
+        IMAGE_NAME = 'flask-lambda-app'           // ECR repo and image name
+        APP_DIR = 'app'                           // Directory containing Flask app and Dockerfile
+        ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_NAME}"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bharatAmeria/lambda_deployment.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir("${APP_DIR}") {
+                    sh 'docker build -t $IMAGE_NAME:latest .'
+                }
+            }
+        }
+
+        stage('Login to AWS ECR') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr-creds']]) {
+                    sh '''
+                        aws --region $AWS_REGION ecr get-login-password | docker login --username AWS --password-stdin $ECR_URI
+                    '''
+                }
+            }
+        }
+
+        stage('Tag & Push to ECR') {
+            steps {
+                sh '''
+                    docker tag $IMAGE_NAME:latest $ECR_URI:latest
+                    docker push $ECR_URI:latest
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Flask app image pushed to AWS ECR. Ready for Lambda deployment!'
+        }
+        failure {
+            echo '❌ Build or push failed. Check logs.'
+        }
+    }
+}
