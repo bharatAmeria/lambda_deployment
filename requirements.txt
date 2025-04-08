@@ -12,7 +12,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 joblib==1.4.2
 MarkupSafe==3.0.2
-numpy==2.2.4
+numpy==2.0.2
 pandas==2.2.3
 PySocks==1.7.1
 python-box==7.3.2
