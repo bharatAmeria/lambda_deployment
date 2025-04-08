@@ -1,13 +1,13 @@
 // @Library("shared") _
 pipeline {
-    agent any  // Run on any available agent
+    agent any 
 
     environment {
-        VENV_DIR = "pred"  // Define virtual environment path
+        VENV_DIR = "pred"  
     }
 
     triggers {
-        pollSCM('* * * * *')  // Polls the repo every minute for changes
+        pollSCM('* * * * *')  
     }
 
     stages {
@@ -20,31 +20,31 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 sh 'python3 -m venv $VENV_DIR'
-                sh './tracker/bin/pip install -r requirements.txt'
+                sh './$VENV_DIR/bin/pip install -r requirements.txt'
             }
         }
 
         stage('Test Environment') {
             steps {
-                sh './tracker/bin/python testEnvironment.py'
+                sh './$VENV_DIR/bin/python testEnvironment.py'
             }
         }
 
         stage('Data Ingestion') {
             steps {
-                sh './tracker/bin/python src/pipeline/stage01_data_ingestion.py'
+                sh './$VENV_DIR/bin/python src/pipeline/stage01_data_ingestion.py'
             }
         }
 
         stage('Data Pre Processing') {
             steps {
-                sh './tracker/bin/python src/pipeline/stage02_data_processing.py'
+                sh './$VENV_DIR/bin/python src/pipeline/stage02_data_processing.py'
             }
         }
 
         stage('Model Training') {
             steps {
-                sh './tracker/bin/python src/pipeline/stage03_model_training.py'
+                sh './$VENV_DIR/bin/python src/pipeline/stage03_model_training.py'
             }
         }
 
