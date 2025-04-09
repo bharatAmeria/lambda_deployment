@@ -5,7 +5,7 @@ import numpy as np
 app = Flask(__name__)
 
 # Load the pickled model
-with open('app/model.pkl', 'rb') as file:
+with open('model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 # Define a function to preprocess the input data

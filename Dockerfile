@@ -1,22 +1,25 @@
-# Use official Python image as the base
-FROM python:3.11-slim
+# Use official Python image with Alpine
+FROM python:3.10-slim
 
-# Set the working directory inside the container
+RUN apt-get update && apt-get install -y \
+    cmake \
+    build-essential \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+
 WORKDIR /app
 
-# Copy the contents of the local app directory into the container
+# Copy the whole app folder
 COPY app/ .
 
-# Install dependencies from requirements.txt
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the environment variable for Flask
-ENV FLASK_APP=app.py
-ENV FLASK_ENV=production
-
-# Expose the port Flask will run on
+# Expose the port Flask uses
 EXPOSE 6000
 
-# Command to run the Flask app
-CMD ["flask", "run", "--port=6000"]
+# Run the app
+CMD ["python3", "app.py"]
+
 

@@ -1,57 +1,68 @@
 pipeline {
     agent {
-        label 'docker-agent' // Use your Jenkins agent that has Docker and AWS CLI installed
+        label 'docker-agent' // Ensure this agent has Docker and AWS CLI installed
     }
 
     environment {
-        AWS_REGION = 'us-east-1'                  // Set your AWS region
-        AWS_ACCOUNT_ID = '123456789012'           // Replace with your AWS account ID
-        IMAGE_NAME = 'flask-lambda-app'           // ECR repo and image name
-        APP_DIR = 'app'                           // Directory containing Flask app and Dockerfile
-        ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_NAME}"
+        dockerUser = credentials('dockerhub-username')  // store as secret text
+        registry = "${dockerUser}/mypython-app-may20"    // DockerHub repo
+        registryCredential = 'dockerhub'                 // Jenkins credentials ID for DockerHub
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/bharatAmeria/lambda_deployment.git'
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: 'https://github.com/bharatAmeria/lambda_deployment.git']]
+                ])
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                dir("${APP_DIR}") {
-                    sh 'docker build -t $IMAGE_NAME:latest .'
+                script {
+                    dockerImage = docker.build("${registry}:${BUILD_NUMBER}")
                 }
             }
         }
 
-        stage('Login to AWS ECR') {
+        stage('Upload Image to DockerHub') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr-creds']]) {
-                    sh '''
-                        aws --region $AWS_REGION ecr get-login-password | docker login --username AWS --password-stdin $ECR_URI
-                    '''
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push()
+                    }
                 }
             }
         }
 
-        stage('Tag & Push to ECR') {
+        stage('Remove Local Docker Image') {
             steps {
-                sh '''
-                    docker tag $IMAGE_NAME:latest $ECR_URI:latest
-                    docker push $ECR_URI:latest
-                '''
+                script {
+                    sh "docker rmi ${registry}:${BUILD_NUMBER}"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    kubernetesDeploy(
+                        configs: 'k8s-deployment.yaml',
+                        kubeconfigId: 'K8S',
+                        enableConfigSubstitution: true
+                    )
+                }
             }
         }
     }
 
     post {
-        success {
-            echo '✅ Flask app image pushed to AWS ECR. Ready for Lambda deployment!'
-        }
-        failure {
-            echo '❌ Build or push failed. Check logs.'
+        always {
+            echo 'Cleaning up the Docker system...'
+            sh 'docker system prune -f'
         }
     }
 }
