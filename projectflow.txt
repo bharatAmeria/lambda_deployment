@@ -1,1 +1,12 @@
-250,6.89,1,0.136428,13,193.9820,8,1997,2,0,1  -> data input for prediction
+1. 250,6.89,1,0.136428,13,193.9820,8,1997,2,0,1  -> data input for prediction
+2. ArgoCD installation 
+   { kubectl create namespace argocd }
+   { kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml }
+   { kubectl get pod -n argocd -> to check pods under the namespace argocd }
+3. kubectl get svc -n argocd -> to check services under the namespace argocd there is {argocd-server} which is used to access argocd ui.
+   we have to port forwarding to access it using the below command.
+   { kubectl port-forward -n argocd svc/argocd-server 9090:443} it expose web ui to port 9090.
+4. now to login argocd the username is admin and the password is auto generated to grab pass.
+   { argocd admin initial-password -n argocd }
+5. Now we have to configure argocd.
+
