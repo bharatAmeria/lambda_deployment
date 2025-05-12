@@ -20,20 +20,24 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.8'
-        cache: 'pip'
-    - run: pip install -r requirements.txt
+    
+    - name: Create virtual environment
+      run: python3 -m venv pred
+
+    - name: Install dependencies
+      run: ./pred/bin/pip install -r requirements.txt
 
     - name: Test environment
-      run: python testEnvironment.py
+      run: ./pred/bin/python testEnvironment.py
 
     - name: Data Ingestion
-      run: python src/pipeline/stage01_data_ingestion.py
+      run: ./pred/bin/python src/pipeline/stage01_data_ingestion.py
 
     - name: Data Pre Processing
-      run: python src/pipeline/stage02_data_processing.py
+      run: ./pred/bin/python src/pipeline/stage02_data_processing.py
 
     - name: Model Training
-      run: python src/pipeline/stage03_model_training.py
+      run: ./pred/bin/python src/pipeline/stage03_model_training.py
 
   post:
     needs: setup
