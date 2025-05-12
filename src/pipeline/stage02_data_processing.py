@@ -4,7 +4,7 @@ from src.constants import *
 from src.config import CONFIG
 from src.logger import logging
 from src.exception import MyException
-from src.components.dataProcessing import DataPreProcessing, DataPreprocessStrategy
+from src.components.data_processing import DataPreProcessing, DataPreprocessStrategy
 
 class DataProcessingPipeline:
     def __init__(self):

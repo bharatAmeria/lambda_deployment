@@ -1,13 +1,12 @@
-import awsgi
 from flask import Flask, request, render_template
-import pickle
+import joblib
 import numpy as np
 
 app = Flask(__name__)
 
 # Load the pickled model
 with open('model.pkl', 'rb') as file:
-    model = pickle.load(file)
+    model = joblib.load(file)
 
 # Define a function to preprocess the input data
 def preprocess_input(input_str):
@@ -26,9 +25,6 @@ def predict():
     prediction = model.predict(input_array)[0]
     output_message = f'The predicted sales value is {prediction:.2f}'
     return render_template('index.html', prediction_text=output_message)
-
-def lambda_handler(event, context):
-    return awsgi.response(app, event, context, base64_content_types={'image/png'})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5050)

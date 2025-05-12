@@ -2,6 +2,4 @@ Flask==3.1.0
 numpy==2.0.2
 pickleshare==0.7.5
 xgboost==1.3.3
-gunicorn
-mangum==0.19.0
-aws-wsgi==0.2.7
+joblib==1.1.0

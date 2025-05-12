@@ -1,26 +1,20 @@
-# FROM public.ecr.aws/lambda/python:3.9
-
-# # Set working directory
-# WORKDIR /var/task
-
-# # Copy requirements file and install dependencies
-# COPY app/requirements.txt ./
-# RUN pip install -r requirements.txt
-
-# # Copy the entire app directory to the working directory
-# COPY app /var/task/app
-
-# # Define Lambda entry point
-# CMD ["lambda_handler.handler"]
-
 # Dockerfile
 FROM python:3.9-slim
 
 WORKDIR /app
 ADD . /app
+COPY app/model.pkl /app
+# Install the dependencies from requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install -r requirements.txt
+# Copy the application code (including model.pkl and templates) into the container
+COPY . /app/
 
-CMD ["python", "app.py"]
+# Expose the port that Flask will run on
+EXPOSE 5050
 
+# Set the environment variable to tell Flask to run in production mode
+# ENV FLASK_ENV=production
 
+# Set the command to run the Flask app
+CMD ["python", "app/app.py", "--host=0.0.0.0", "--port=5050"]
