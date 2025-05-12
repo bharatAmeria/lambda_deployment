@@ -8,5 +8,5 @@
    { kubectl port-forward -n argocd svc/argocd-server 9090:443} it expose web ui to port 9090.
 4. now to login argocd the username is admin and the password is auto generated to grab pass.
    { argocd admin initial-password -n argocd }
-5. Now we have to configure argocd.
-
+5. Now we have to configure argocd. In the dev/application.yaml file. to configure that run cmd.
+   { kubectl apply -f application.yaml }
