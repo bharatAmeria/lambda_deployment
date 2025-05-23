@@ -1,6 +1,5 @@
 # Dockerfile
 FROM python:3.9-slim
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 WORKDIR /app
 ADD . /app
