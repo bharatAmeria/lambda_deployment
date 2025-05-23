@@ -45,7 +45,7 @@ jobs:
 
 
   build-windows:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: build-linux
     runs-on: [self-hosted, windows, docker]
     name: Build and Push Windows Image
 
