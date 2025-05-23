@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/falsk-app
+      IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/flask-app
       VERSION: v1.0.${{ github.run_number }}
 
     steps:
