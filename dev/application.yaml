@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: flask-application
+  name: agro-application
   namespace: argocd
 spec:
   project: default
