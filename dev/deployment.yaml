@@ -2,12 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myapp
-  namespace: flaskapp
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: myapp
+  replicas: 2
   template:
     metadata:
       labels:
@@ -17,23 +16,4 @@ spec:
       - name: myapp
         image: bharat9838/flask-app:v1.0.11
         ports:
-        - containerPort: 5050  
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 5050
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 5050
-          initialDelaySeconds: 15
-          periodSeconds: 20
+        - containerPort: 5050
