@@ -1,0 +1,28 @@
+# Use a Windows base image with Python
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+# Install Python 3.9 manually (Windows doesn't come with it)
+SHELL ["powershell", "-Command"]
+
+# Download and install Python 3.9
+RUN Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe -OutFile python-installer.exe ; \
+    Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait ; \
+    Remove-Item python-installer.exe
+
+# Confirm Python is installed
+RUN python --version
+
+# Set working directory
+WORKDIR C:\app
+
+# Copy everything into container
+COPY . .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose Flask app port
+EXPOSE 5050
+
+# Run the Flask app
+CMD ["python", "app\\app.py", "--host=0.0.0.0", "--port=5050"]

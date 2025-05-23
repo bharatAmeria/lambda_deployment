@@ -94,3 +94,5 @@ eksctl delete cluster --name eksargocd --region us-east-1
   --dest-server https://kubernetes.default.svc \
   --dest-namespace default
 
+docker
+docker build -f Dockerfile.windows -t myimage:windows .

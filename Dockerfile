@@ -1,9 +1,11 @@
 # Dockerfile
 FROM python:3.9-slim
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 WORKDIR /app
 ADD . /app
 COPY app/model.pkl /app
+
 # Install the dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -12,9 +14,6 @@ COPY . /app/
 
 # Expose the port that Flask will run on
 EXPOSE 5050
-
-# Set the environment variable to tell Flask to run in production mode
-# ENV FLASK_ENV=production
 
 # Set the command to run the Flask app
 CMD ["python", "app/app.py", "--host=0.0.0.0", "--port=5050"]
