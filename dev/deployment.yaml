@@ -16,4 +16,4 @@ spec:
       - name: myapp
         image: bharat9838/falsk-app:1.1
         ports:
-        - containerPort: 8080
+        - containerPort: 5050
