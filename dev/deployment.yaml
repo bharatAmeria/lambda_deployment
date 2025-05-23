@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: bharat9838/flask-app:latest
+        image: bharat9838/flask-app:v1.0.1
         ports:
-        - containerPort: 5050  # updated to 5050
+        - containerPort: 5050  
         resources:
           limits:
             memory: "256Mi"

@@ -88,7 +88,7 @@ eksctl delete cluster --name eksargocd --region us-east-1
    { argocd admin initial-password -n argocd }
 5. Now we have to configure argocd. In the dev/application.yaml file. to configure that run cmd.
    { kubectl apply -f application.yaml }
-6. argocd app create flask-app \
+6. argocd app create app \
   --repo https://github.com/bharatAmeria/sales-price.git \
   --path dev \
   --dest-server https://kubernetes.default.svc \
